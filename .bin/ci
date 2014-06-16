@@ -1,0 +1,62 @@
+# -*- mode: sh -*-
+
+#!/usr/bin/env bash
+
+set -e
+
+PROJECT_DIR="$(git rev-parse --show-toplevel)"
+
+#
+# Setup
+#
+
+INSTALL_DEPS=0
+INSTALL_MOCHA=0
+INSTALL_PHANTOMJS=0
+INSTALL_MOCHAPHANTOMJS=0
+
+cd $PROJECT_DIR
+
+#
+# Project dependencies
+#
+
+# If not already installed, install testing dependencies and add them to the
+# loadpath
+
+if [[ ! -x $(which mocha) ]]; then
+    echo "Global mocha installation not found."
+    INSTALL_DEPS=1
+    INSTALL_MOCHA=1
+fi
+
+if [[ ! -x $(which phantomjs) ]]; then
+    echo "Global phantomjs installation not found."
+    INSTALL_DEPS=1
+    INSTALL_PHANTOMJS=1
+fi
+
+if [[ ! -x $(which mocha-phantomjs) ]]; then
+    echo "Global mocha-phantomjs installation not found."
+    INSTALL_DEPS=1
+    INSTALL_MOCHAPHANTOMJS=1
+fi
+
+
+if [[ $INSTALL_DEPS = 1 ]]; then
+    echo "Installing testing dependencies..."
+
+    [[ $INSTALL_MOCHA = 1 ]] && npm install mocha
+    [[ $INSTALL_PHANTOMJS = 1 ]] && npm install phantomjs
+    [[ $INSTALL_MOCHAPHANTOMJS = 1 ]] && npm install mocha-phantomjs
+
+    echo "Adding testing dependencies to loadpath..."
+
+    PATH=$PROJECT_DIR/node_modules/.bin:$PATH
+fi
+
+#
+# Test
+#
+
+mocha-phantomjs --no-colors --reporter min $PROJECT_DIR/SpecRunner.html
