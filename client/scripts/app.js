@@ -12,7 +12,7 @@ var app = {
 
 app.init = function() {
   app.server = 'https://api.parse.com/1/classes/chatterbox';
-  app.fetch();
+  app.fetch(app.render);
 };
 
 app.send = function(message) {
@@ -30,14 +30,14 @@ app.send = function(message) {
   });
 };
 
-app.fetch = function() {
+app.fetch = function(callback) {
   $.ajax({
     url: app.server,
     type: 'GET',
     contentType: 'application/json',
     success: function(data) {
       console.log('chatterbox: Message sent');
-      app.render(data);
+      callback(data);
     },
     error: function(data) {
       console.error('chatterbox: Failed to send message');
@@ -46,7 +46,10 @@ app.fetch = function() {
 };
 
 app.render = function(messages) {
-  console.log("===== ENTERING RENDER =====");
+  var msgs = messages.results;
+  for (var i = 0; i < msgs.length; i++) {
+    app.addMessage(msgs[i]);
+  }
 };
 
 app.clearMessages = function() {
@@ -54,18 +57,22 @@ app.clearMessages = function() {
 };
 
 app.addMessage = function(message) {
-  var htmlStr = '<div class="message">' + message.username + '</div>';
-  var msgNode = $(htmlStr);
-  console.log(msgNode);
+  var msgNode = $('<div class="message"></div>');
+  var userHtml = '<text class="msgUser"> ' + message.username + ' </text>';
+  var textHtml = '<text class="msgText"> ' + message.text + ' </text>';
+  var timeHtml = '<text class="msgTime"> ' + message.createdAt + ' </text>';
+  msgNode.append($(userHtml));
+  msgNode.append($(textHtml));
+  msgNode.append($(timeHtml));
   $('#chats').append(msgNode);
 };
 
-// initialize app with messages
-app.init();
+
 
 // render app messages and init refresh logic
 $(document).ready(function() {
-  app.render();
+  // initialize app with messages
+  app.init();
   app.addMessage(testMsg);
   app.addMessage(testMsg);
   app.addMessage(testMsg);
