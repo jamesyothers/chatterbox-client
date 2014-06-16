@@ -6,15 +6,16 @@ var testMsg = {
   'roomname': '4chan'
 };
 
-var app = {};
+var app = {
+  server: 'https://api.parse.com/1/classes/chatterbox'
+};
 
 app.init = function() {
-
 };
 
 app.send = function(message) {
   $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
@@ -29,7 +30,7 @@ app.send = function(message) {
 
 app.fetch = function() {
   $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'GET',
     contentType: 'application/json',
     success: function(data) {
