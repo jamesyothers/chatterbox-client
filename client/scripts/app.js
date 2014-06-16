@@ -49,10 +49,25 @@ app.render = function(messages) {
   console.log("===== ENTERING RENDER =====");
 };
 
+app.clearMessages = function() {
+  $('#chats').empty();
+};
+
+app.addMessage = function(message) {
+  var htmlStr = '<div class="message">' + message.username + '</div>';
+  var msgNode = $(htmlStr);
+  console.log(msgNode);
+  $('#chats').append(msgNode);
+};
+
 // initialize app with messages
 app.init();
 
 // render app messages and init refresh logic
 $(document).ready(function() {
   app.render();
+  app.addMessage(testMsg);
+  app.addMessage(testMsg);
+  app.addMessage(testMsg);
+  app.clearMessages();
 });
