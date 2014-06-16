@@ -7,10 +7,12 @@ var testMsg = {
 };
 
 var app = {
-  server: 'https://api.parse.com/1/classes/chatterbox'
+  server: undefined
 };
 
 app.init = function() {
+  app.server = 'https://api.parse.com/1/classes/chatterbox';
+  app.fetch();
 };
 
 app.send = function(message) {
@@ -35,6 +37,7 @@ app.fetch = function() {
     contentType: 'application/json',
     success: function(data) {
       console.log('chatterbox: Message sent');
+      app.render(data);
     },
     error: function(data) {
       console.error('chatterbox: Failed to send message');
@@ -42,3 +45,14 @@ app.fetch = function() {
   });
 };
 
+app.render = function(messages) {
+  console.log("===== ENTERING RENDER =====");
+};
+
+// initialize app with messages
+app.init();
+
+// render app messages and init refresh logic
+$(document).ready(function() {
+  app.render();
+});
