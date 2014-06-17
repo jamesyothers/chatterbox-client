@@ -88,11 +88,21 @@ app.addMessage = function(message) {
     //msgNode.wrap('<b></b>');
     $msgNode.css('font-weight', 'bold');
   }
+  app.addRoomList(message.roomname);
   // console.log(app.friendsList);
   // console.log(app.friendsList[message.username]);
   // console.log(message.username);
   // console.log($msgNode);
   $('#chats').append($msgNode);
+};
+
+app.addRoomList = function(room) {
+  console.log("room: " + room);
+  if (!app.roomList[room]) {
+    app.roomList[room] = true;
+    var optionNode = $('<option value="' + _.escape(room) + '">' + _.escape(room) + '</option>');
+    $('#roomDrop').append(optionNode);
+  }
 };
 
 app.addRoom = function(room) {
