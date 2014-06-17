@@ -7,7 +7,9 @@ var testMsg = {
 };
 
 var app = {
-  server: undefined
+  server: undefined,
+  roomList: {},
+  friendsList: {}
 };
 
 app.init = function() {
@@ -65,11 +67,19 @@ app.clearMessages = function() {
 };
 
 app.addMessage = function(message) {
+  var buildUserNode = function(user) {
+    var userHtml = '<a class="username" href="#"> ' + _.escape(user) + ' </a>';
+    var node = $(userHtml);
+    node.click('on', function() {
+      app.addFriend(user);
+    });
+    return node;
+  };
+
   var msgNode = $('<div class="message"></div>');
-  var userHtml = '<text class="msgUser"> ' + _.escape(message.username) + ' </text>';
   var textHtml = '<text class="msgText"> ' + _.escape(message.text) + ' </text>';
   var timeHtml = '<text class="msgTime"> ' + _.escape(message.createdAt) + ' </text>';
-  msgNode.append($(userHtml));
+  msgNode.append(buildUserNode(message.username));
   msgNode.append($(textHtml));
   msgNode.append($(timeHtml));
   $('#chats').append(msgNode);
@@ -78,6 +88,12 @@ app.addMessage = function(message) {
 app.addRoom = function(room) {
   var room = $('<div class="room">' + _.escape(room) + '</div>');
   $('#roomSelect').append(room);
+};
+
+app.addFriend = function(friend) {
+  var friendNode = $('<div class="friend">' + _.escape(friend) + '</div>');
+  $('#friendsList').append(friendNode);
+  app.friendsList[friend] = true;
 };
 
 // render app messages and init refresh logic
@@ -104,7 +120,6 @@ $(document).ready(function() {
   });
   $('#roomSubmit').click('on', function() {
     var roomName = $('#newRoom')[0].value;
-    console.log('roomName' + roomName);
     app.addRoom(roomName);
   });
 });
