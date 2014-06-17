@@ -9,13 +9,13 @@ var testMsg = {
 var app = {
   server: undefined,
   roomList: {},
-  friendsList: {}
+  friendsList: {},
+  room: undefined
 };
 
 app.init = function() {
   app.server = 'https://api.parse.com/1/classes/chatterbox';
   app.username = window.location.search.slice(window.location.search.indexOf('=') + 1);
-  app.room = '4chan';
   app.refresh();
 };
 
@@ -43,7 +43,7 @@ app.fetch = function(callback) {
     url: app.server,
     type: 'GET',
     contentType: 'application/json',
-    data: {order: '-createdAt'},
+    data: {order: '-createdAt', where: JSON.stringify({"roomname":app.room})},
     success: function(data) {
       console.log('chatterbox: Messages retrieved');
       callback(data);
@@ -76,24 +76,36 @@ app.addMessage = function(message) {
     return node;
   };
 
-  var msgNode = $('<div class="message"></div>');
+  var $msgNode = $('<div class="message"></div>');
   var textHtml = '<text class="msgText"> ' + _.escape(message.text) + ' </text>';
   var timeHtml = '<text class="msgTime"> ' + _.escape(message.createdAt) + ' </text>';
-  msgNode.append(buildUserNode(message.username));
-  msgNode.append($(textHtml));
-  msgNode.append($(timeHtml));
-  $('#chats').append(msgNode);
+  var roomHtml = '<text class="roomname">' + _.escape(message.roomname) + '</text>';
+  $msgNode.append(buildUserNode(message.username));
+  $msgNode.append($(roomHtml));
+  $msgNode.append($(textHtml));
+  $msgNode.append($(timeHtml));
+  if (app.friendsList[message.username]) {
+    //msgNode.wrap('<b></b>');
+    $msgNode.css('font-weight', 'bold');
+  }
+  // console.log(app.friendsList);
+  // console.log(app.friendsList[message.username]);
+  // console.log(message.username);
+  // console.log($msgNode);
+  $('#chats').append($msgNode);
 };
 
 app.addRoom = function(room) {
   var room = $('<div class="room">' + _.escape(room) + '</div>');
   $('#roomSelect').append(room);
+  app.refresh();
 };
 
 app.addFriend = function(friend) {
   var friendNode = $('<div class="friend">' + _.escape(friend) + '</div>');
   $('#friendsList').append(friendNode);
   app.friendsList[friend] = true;
+  app.refresh();
 };
 
 app.handleSubmit = function() {
@@ -101,7 +113,7 @@ app.handleSubmit = function() {
   var msg = {
     'username': app.username,
     'text': message,
-    'room': '4chan'
+    'roomname': app.roomname
   };
   app.send(msg);
 };
