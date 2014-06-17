@@ -76,7 +76,8 @@ app.addMessage = function(message) {
 };
 
 app.addRoom = function(room) {
-  $
+  var room = $('<div class="room">' + _.escape(room) + '</div>');
+  $('#roomSelect').append(room);
 };
 
 // render app messages and init refresh logic
@@ -90,7 +91,7 @@ $(document).ready(function() {
   app.addMessage(testMsg);
   app.clearMessages();
 
-  $('#newSubmit').click('on', function() {
+  $('#msgSubmit').click('on', function() {
     var message = $('#newText')[0].value;
     var msg = {
       'username': app.username,
@@ -100,5 +101,10 @@ $(document).ready(function() {
     // console.log(msg);
     // app.refresh();
     app.send(msg);
+  });
+  $('#roomSubmit').click('on', function() {
+    var roomName = $('#newRoom')[0].value;
+    console.log('roomName' + roomName);
+    app.addRoom(roomName);
   });
 });
