@@ -72,17 +72,12 @@ app.fetch = function(callback) {
 // receives messages to render to page
 app.render = function(messages) {
   // empty messages from page
-  app.clearMessages();
+  $('#chats').empty();
   // results property of messages is an array of message objects
   var msgs = messages.results;
   for (var i = 0; i < msgs.length; i++) {
     app.addMessage(msgs[i]);
   }
-};
-
-// clear messages from page
-app.clearMessages = function() {
-  $('#chats').empty();
 };
 
 // parsing of message obtained from input field
@@ -170,8 +165,6 @@ $(document).ready(function() {
   app.init();
   // fetch, delete, and re-display messages every 1 second
   setInterval(app.refresh, 1000);
-
-  app.clearMessages();
 
   // utilize 'submit' event handler to pass specs
   $('#send .submit').submit(function(event) {
