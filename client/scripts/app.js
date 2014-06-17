@@ -97,7 +97,6 @@ app.addMessage = function(message) {
 };
 
 app.addRoomList = function(room) {
-  console.log("room: " + room);
   if (!app.roomList[room]) {
     app.roomList[room] = true;
     var optionNode = $('<option value="' + _.escape(room) + '">' + _.escape(room) + '</option>');
@@ -150,5 +149,9 @@ $(document).ready(function() {
   $('#roomSubmit').click('on', function() {
     var roomName = $('#newRoom')[0].value;
     app.addRoom(roomName);
+  });
+  $('#roomDrop').on('change', function() {
+    app.room = $('#roomDrop')[0].value;
+    app.refresh();
   });
 });
