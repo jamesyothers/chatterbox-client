@@ -14,9 +14,9 @@ var app = {
 
 app.init = function() {
   app.server = 'https://api.parse.com/1/classes/chatterbox';
-  app.refresh();
   app.username = window.location.search.slice(window.location.search.indexOf('=') + 1);
   app.room = '4chan';
+  app.refresh();
 };
 
 app.refresh = function() {
@@ -96,6 +96,16 @@ app.addFriend = function(friend) {
   app.friendsList[friend] = true;
 };
 
+app.handleSubmit = function() {
+  var message = $('#message')[0].value;
+  var msg = {
+    'username': app.username,
+    'text': message,
+    'room': '4chan'
+  };
+  app.send(msg);
+};
+
 // render app messages and init refresh logic
 $(document).ready(function() {
   // initialize app with messages
@@ -107,16 +117,13 @@ $(document).ready(function() {
   app.addMessage(testMsg);
   app.clearMessages();
 
-  $('#msgSubmit').click('on', function() {
-    var message = $('#newText')[0].value;
-    var msg = {
-      'username': app.username,
-      'text': message,
-      'room': '4chan'
-    };
-    // console.log(msg);
-    // app.refresh();
-    app.send(msg);
+  $('#send .submit').submit(function(event) {
+    app.handleSubmit();
+    return false;
+  });
+  $('#send .submit').on('click', function(event) {
+    app.handleSubmit();
+    return false;
   });
   $('#roomSubmit').click('on', function() {
     var roomName = $('#newRoom')[0].value;
