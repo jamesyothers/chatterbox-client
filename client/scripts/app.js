@@ -3,7 +3,7 @@
 var testMsg = {
   'username': 'JamesYothers',
   'text': 'I am James',
-  'roomname': '4chan'
+  'room': '4chan'
 };
 
 var app = {
@@ -13,6 +13,8 @@ var app = {
 app.init = function() {
   app.server = 'https://api.parse.com/1/classes/chatterbox';
   app.refresh();
+  app.username = window.location.search.slice(window.location.search.indexOf('=') + 1);
+  app.room = '4chan';
 };
 
 app.refresh = function() {
@@ -39,6 +41,7 @@ app.fetch = function(callback) {
     url: app.server,
     type: 'GET',
     contentType: 'application/json',
+    data: {order: '-createdAt'},
     success: function(data) {
       console.log('chatterbox: Messages retrieved');
       callback(data);
@@ -72,7 +75,9 @@ app.addMessage = function(message) {
   $('#chats').append(msgNode);
 };
 
-
+app.addRoom = function(room) {
+  $
+};
 
 // render app messages and init refresh logic
 $(document).ready(function() {
@@ -84,4 +89,16 @@ $(document).ready(function() {
   app.addMessage(testMsg);
   app.addMessage(testMsg);
   app.clearMessages();
+
+  $('#newSubmit').click('on', function() {
+    var message = $('#newText')[0].value;
+    var msg = {
+      'username': app.username,
+      'text': message,
+      'room': '4chan'
+    };
+    // console.log(msg);
+    // app.refresh();
+    app.send(msg);
+  });
 });
